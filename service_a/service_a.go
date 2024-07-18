@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -19,12 +20,16 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-var connB *websocket.Conn
+var (
+	connB *websocket.Conn
+	mu    sync.Mutex
+)
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Fatalf("Failed to upgrade to websocket: %v", err)
+		log.Printf("Failed to upgrade to websocket: %v", err)
+		return
 	}
 	defer ws.Close()
 
@@ -57,11 +62,17 @@ func readConsoleAndSendMessages() {
 		fmt.Print("Enter message for Service B: ")
 		message, _ := reader.ReadString('\n')
 
-		err := connB.WriteMessage(websocket.TextMessage, []byte(message))
-		if err != nil {
-			log.Printf("Error writing message to Service B: %v", err)
-			break
+		mu.Lock()
+		if connB != nil {
+			err := connB.WriteMessage(websocket.TextMessage, []byte(message))
+			if err != nil {
+				log.Printf("Error writing message to Service B: %v", err)
+				connB.Close()
+				connB = nil
+				go connectToServiceB()
+			}
 		}
+		mu.Unlock()
 	}
 }
 
