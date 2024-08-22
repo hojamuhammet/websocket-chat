@@ -44,7 +44,3 @@ WebSocket chat application implemented in Go, consisting of two services, Servic
 ### Sending Messages
 
 Enter a message in the console where each service is running to send a message to the other service.
-
-## License
-
-This project is licensed under the MIT License.
