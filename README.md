@@ -4,7 +4,6 @@ WebSocket chat application implemented in Go, consisting of two services, Servic
 
 ## Features
 
-- Bidirectional communication between two services
 - Real-time messaging using WebSockets
 - Console-based message input
 - Automatic reconnection on connection loss
@@ -18,7 +17,7 @@ WebSocket chat application implemented in Go, consisting of two services, Servic
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/yourusername/websocket-chat.git
+   git clone https://github.com/hojamuhammet/websocket-chat.git
    ```
 
 2. **Install dependencies:**
